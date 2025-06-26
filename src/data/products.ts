@@ -56,6 +56,8 @@
 
 
 import { Product } from '@/contexts/CartContext';
+ 
+import { GetProductData } from '@/services/AllApi';
 
 export const products: Product[] = [
   {
