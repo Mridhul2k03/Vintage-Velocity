@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Heart, Star } from 'lucide-react';
@@ -7,6 +6,13 @@ import { products } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -33,9 +39,11 @@ const ProductDetail = () => {
     dispatch({ type: 'ADD_TO_CART', payload: product });
     toast({
       title: "Added to cart!",
-      description: `${product.name} has been added to your cart.`,
+      description: `₹{product.name} has been added to your cart.`,
     });
   };
+
+  const imagesToShow = product.images || [product.image];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
@@ -43,7 +51,7 @@ const ProductDetail = () => {
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Link 
-          to="/" 
+          to="/products" 
           className="inline-flex items-center text-purple-600 hover:text-purple-700 mb-8 transition-colors"
         >
           <ArrowLeft size={20} className="mr-2" />
@@ -51,13 +59,41 @@ const ProductDetail = () => {
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Product Image */}
-          <div className="aspect-square rounded-3xl overflow-hidden bg-gray-100 shadow-2xl">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-full object-cover"
-            />
+          {/* Product Images Carousel */}
+          <div className="relative">
+            <Carousel className="w-full">
+              <CarouselContent>
+                {imagesToShow.map((image, index) => (
+                  <CarouselItem key={index}>
+                    <div className="aspect-square rounded-3xl overflow-hidden bg-gray-100 shadow-2xl">
+                      <img
+                        src={image}
+                        alt={`₹{product.name} - Image ₹{index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {imagesToShow.length > 1 && (
+                <>
+                  <CarouselPrevious className="left-4" />
+                  <CarouselNext className="right-4" />
+                </>
+              )}
+            </Carousel>
+            
+            {/* Image indicators */}
+            {imagesToShow.length > 1 && (
+              <div className="flex justify-center mt-4 space-x-2">
+                {imagesToShow.map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-2 h-2 rounded-full bg-gray-300"
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
@@ -111,8 +147,8 @@ const ProductDetail = () => {
             <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100">
                 <div className="text-2xl mb-2">🚚</div>
-                <div className="text-sm font-medium text-gray-900">Free Shipping</div>
-                <div className="text-xs text-gray-600">On orders over $50</div>
+                <div className="text-sm font-medium text-gray-900">Shipping</div>
+                <div className="text-xs text-gray-600">All over India</div>
               </div>
               <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100">
                 <div className="text-2xl mb-2">🔄</div>
