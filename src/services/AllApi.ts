@@ -5,6 +5,11 @@ import { CommonApi } from "./CommonApi";
 export const Base_Url = "http://127.0.0.1:8000/"
 
 
-export const GetProductData = async (data: any) =>{
-    return await CommonApi("GET",`${Base_Url}/product/`,data,"")
+export const GetAllProductData = async (data: any) =>{
+    return await CommonApi("GET",`${Base_Url}/products/`,data,"")
+}
+
+export const GetSingleProductData = async (id: any) =>{
+    const params = new URLSearchParams({id: id});
+    return await CommonApi("GET",`${Base_Url}/products/?{params.toString()}`,"",{})
 }

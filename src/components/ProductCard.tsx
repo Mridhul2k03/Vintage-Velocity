@@ -2,12 +2,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from '@/contexts/CartContext';
+import { GetAllProductData } from '@/services/AllApi';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const products2 = GetAllProductData(''); 
+  console.log(products2);
   return (
     <Link to={`/product/${product.id}`} className="group">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -45,3 +48,4 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 };
 
 export default ProductCard;
+

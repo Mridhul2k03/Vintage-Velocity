@@ -56,14 +56,13 @@
 
 
 import { Product } from '@/contexts/CartContext';
- 
-import { GetProductData } from '@/services/AllApi';
+
 
 export const products: Product[] = [
   {
     id: 1,
-    name: "Messeratti Alferi",
-    price: 511.99,
+    name: "Red Bull RB18",
+    price: 6000,
     image: "https://raw.githubusercontent.com/Mridhul2k03/HOTWHEELSIMAGE/refs/heads/main/images/rb01.jpg",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     category: "Sports Cars",
