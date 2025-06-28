@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Minus, Plus, X, ArrowLeft } from 'lucide-react';
@@ -84,16 +83,16 @@ const Cart = () => {
               <div key={item.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div className="flex items-center space-x-6">
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={item.images.length > 0 ? item.images[0].image : ''}
+                    alt={item.product_name}
                     className="w-24 h-24 object-cover rounded-xl"
                   />
                   
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.name}</h3>
-                    <p className="text-gray-600 text-sm mb-2">{item.category}</p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.product_name}</h3>
+                    <p className="text-gray-600 text-sm mb-2">{item.category.category}</p>
                     <p className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                      ₹{item.price}
+                      ${item.is_offer ? item.offer_price : item.price}
                     </p>
                   </div>
 
@@ -131,21 +130,21 @@ const Cart = () => {
             <div className="space-y-4 mb-6">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal ({state.itemCount} items)</span>
-                <span>₹{state.total.toFixed(2)}</span>
+                <span>${state.total.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
-                <span className="text-green-600">₹300</span>
+                <span className="text-green-600">Free</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Tax</span>
-                <span>₹{(state.total * 0.08).toFixed(2)}</span>
+                <span>${(state.total * 0.08).toFixed(2)}</span>
               </div>
               <div className="border-t pt-4">
                 <div className="flex justify-between text-xl font-bold text-gray-900">
                   <span>Total</span>
                   <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                    ₹{(state.total + state.total * 0.08).toFixed(2)}
+                    ${(state.total + state.total * 0.08).toFixed(2)}
                   </span>
                 </div>
               </div>

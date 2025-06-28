@@ -1,81 +1,78 @@
-
-
-// const categories = [
-//   'Sports Cars',
-//   'Muscle Cars',
-//   'Supercars',
-//   'Hypercars',
-//   'Race Cars',
-//   'Monster Trucks',
-//   'Off-Road Vehicles',
-//   'Police Cars',
-//   'Fire Trucks',
-//   'Construction Vehicles',
-//   'Motorcycles',
-//   'Military Vehicles',
-//   'Aircraft / Planes',
-//   'Boats & Watercraft',
-//   'Hot Wheels Originals',
-//   'Hot Wheels Legends',
-//   'HW Flames',
-//   'HW Race Team',
-//   'HW Rescue',
-//   'HW Metro',
-//   'HW Art Cars',
-//   'HW Exotics',
-//   'Street Beasts',
-//   'X-Raycers',
-//   'Track Stars',
-//   'Color Shifters',
-//   'For Collectors',
-//   'For Kids',
-//   'Track Builders',
-//   'Playsets',
-//   'Stunt Sets',
-//   'Die-Cast Basics',
-//   'Limited Editions',
-//   'Treasure Hunts',
-//   'Super Treasure Hunts',
-//   'First Editions',
-//   'Exclusive Variants',
-//   'Glow in the Dark',
-//   'Color Changers',
-//   'Premium Models',
-//   'Retro Series',
-//   'Real Riders (rubber tires)',
-//   'Movie & TV Series Cars',
-//   'Carded Singles',
-//   '5-Packs',
-//   '10-Packs',
-//   'Display Cases',
-//   'Box Sets',
-//   'Collector Editions'
-// ];
-
-
-
-
 import { Product } from '@/contexts/CartContext';
 
+// Fetch products from API
+export const fetchProducts = async (): Promise<Product[]> => {
+  try {
+    const response = await fetch('https://vintagevelocity-backend-production.up.railway.app/products/');
+    if (!response.ok) {
+      throw new Error('Failed to fetch products');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    // Fallback to static data if API fails
+    return fallbackProducts;
+  }
+};
 
-export const products: Product[] = [
+// Fallback static data
+const fallbackProducts: Product[] = [
   {
     id: 1,
-    name: "Red Bull RB18",
-    price: 6000,
-    image: "https://raw.githubusercontent.com/Mridhul2k03/HOTWHEELSIMAGE/refs/heads/main/images/rb01.jpg",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    category: "Sports Cars",
-    material: "Metal",
     images: [
-      "https://raw.githubusercontent.com/Mridhul2k03/HOTWHEELSIMAGE/refs/heads/main/images/rb01.jpg",
-      "https://raw.githubusercontent.com/Mridhul2k03/HOTWHEELSIMAGE/refs/heads/main/images/rb02.jpg",
-      "https://raw.githubusercontent.com/Mridhul2k03/HOTWHEELSIMAGE/refs/heads/main/images/rb03.jpg",
-      "https://raw.githubusercontent.com/Mridhul2k03/HOTWHEELSIMAGE/refs/heads/main/images/rb04.jpg",
-      "https://raw.githubusercontent.com/Mridhul2k03/HOTWHEELSIMAGE/refs/heads/main/images/rb05.jpg",
-      "https://raw.githubusercontent.com/Mridhul2k03/HOTWHEELSIMAGE/refs/heads/main/images/rb06.jpg",
-      "https://raw.githubusercontent.com/Mridhul2k03/HOTWHEELSIMAGE/refs/heads/main/images/rb07.jpg",
-    ]
-  },
-
+      {
+        id: 1,
+        image: "http://127.0.0.1:8000/media/images/rb01.jpg",
+        product: 1
+      },
+      {
+        id: 2,
+        image: "http://127.0.0.1:8000/media/images/rb02.jpg",
+        product: 1
+      },
+      {
+        id: 3,
+        image: "http://127.0.0.1:8000/media/images/rb03.jpg",
+        product: 1
+      },
+      {
+        id: 4,
+        image: "http://127.0.0.1:8000/media/images/rb04.jpg",
+        product: 1
+      },
+      {
+        id: 5,
+        image: "http://127.0.0.1:8000/media/images/rb05.jpg",
+        product: 1
+      },
+      {
+        id: 6,
+        image: "http://127.0.0.1:8000/media/images/rb06.jpg",
+        product: 1
+      },
+      {
+        id: 7,
+        image: "http://127.0.0.1:8000/media/images/rb07.jpg",
+        product: 1
+      }
+    ],
+    category: {
+      id: 50,
+      category: "formula one"
+    },
+    material: {
+      id: 1,
+      material: "metal"
+    },
+    product_name: "Red Bull F1 static",
+    description: "excellent",
+    price: "2399",
+    is_offer: true,
+    offer_price: "2000",
+    is_stock: true
+  }
 ];
+
+// For backward compatibility, export static products
+export const products = fallbackProducts;

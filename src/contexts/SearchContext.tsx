@@ -1,6 +1,5 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Product } from '@/contexts/CartContext';
+import { Product } from './CartContext';
 
 interface SearchContextType {
   searchTerm: string;
@@ -14,20 +13,21 @@ interface SearchContextType {
   currentPage: number;
   setCurrentPage: (page: number) => void;
   itemsPerPage: number;
+  setItemsPerPage: (items: number) => void;
   filteredProducts: Product[];
   setFilteredProducts: (products: Product[]) => void;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
-export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const SearchProvider = ({ children }: { children: ReactNode }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 16000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000]);
   const [sortBy, setSortBy] = useState('name');
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const itemsPerPage = 8;
 
   return (
     <SearchContext.Provider
@@ -43,6 +43,7 @@ export const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         currentPage,
         setCurrentPage,
         itemsPerPage,
+        setItemsPerPage,
         filteredProducts,
         setFilteredProducts,
       }}

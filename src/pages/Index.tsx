@@ -1,13 +1,15 @@
-
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Header from '@/components/Header';
 import ProductCard from '@/components/ProductCard';
 import AdvancedSearch from '@/components/AdvancedSearch';
 import ProductPagination from '@/components/ProductPagination';
-import { products } from '@/data/products';
+import { fetchProducts } from '@/data/products';
 import { useSearch } from '@/contexts/SearchContext';
+import { Product } from '@/contexts/CartContext';
 
 const Index = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const {
     searchTerm,
     selectedCategory,
@@ -20,34 +22,54 @@ const Index = () => {
     setCurrentPage,
   } = useSearch();
 
+  // Fetch products from API
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const fetchedProducts = await fetchProducts();
+        setProducts(fetchedProducts);
+      } catch (error) {
+        console.error('Error loading products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
   // Filter and sort products based on search criteria
   const processedProducts = useMemo(() => {
     let filtered = products.filter((product) => {
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      const matchesSearch = product.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            product.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = !selectedCategory || product.category === selectedCategory;
-      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+      const matchesCategory = !selectedCategory || product.category.category === selectedCategory;
+      const productPrice = product.is_offer ? parseFloat(product.offer_price) : parseFloat(product.price);
+      const matchesPrice = productPrice >= priceRange[0] && productPrice <= priceRange[1];
       
       return matchesSearch && matchesCategory && matchesPrice;
     });
 
     // Sort products
     filtered.sort((a, b) => {
+      const priceA = a.is_offer ? parseFloat(a.offer_price) : parseFloat(a.price);
+      const priceB = b.is_offer ? parseFloat(b.offer_price) : parseFloat(b.price);
+      
       switch (sortBy) {
         case 'price-low':
-          return a.price - b.price;
+          return priceA - priceB;
         case 'price-high':
-          return b.price - a.price;
+          return priceB - priceA;
         case 'category':
-          return a.category.localeCompare(b.category);
+          return a.category.category.localeCompare(b.category.category);
         case 'name':
         default:
-          return a.name.localeCompare(b.name);
+          return a.product_name.localeCompare(b.product_name);
       }
     });
 
     return filtered;
-  }, [searchTerm, selectedCategory, priceRange, sortBy]);
+  }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
 
   // Update filtered products when criteria change
   useEffect(() => {
@@ -61,6 +83,20 @@ const Index = () => {
     const endIndex = startIndex + itemsPerPage;
     return filteredProducts.slice(startIndex, endIndex);
   }, [filteredProducts, currentPage, itemsPerPage]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading products...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
@@ -84,8 +120,8 @@ const Index = () => {
         <div className="mb-6">
           <p className="text-gray-600">
             Showing {currentProducts.length} of {filteredProducts.length} products
-            {searchTerm && ` for "₹{searchTerm}"`}
-            {selectedCategory && ` in ₹{selectedCategory}`}
+            {searchTerm && ` for "${searchTerm}"`}
+            {selectedCategory && ` in ${selectedCategory}`}
           </p>
         </div>
 
@@ -107,13 +143,13 @@ const Index = () => {
         <ProductPagination />
 
         {/* Feature Section */}
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center p-8 rounded-2xl bg-white shadow-sm border border-gray-100">
             <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <span className="text-white text-2xl">🚚</span>
             </div>
-            <h3 className="text-xl font-semibold mb-4">All India Shipping</h3>
-            <p className="text-gray-600">all India shipping on all orders </p>
+            <h3 className="text-xl font-semibold mb-4">Free Shipping</h3>
+            <p className="text-gray-600">Free shipping on all orders over $50</p>
           </div>
           <div className="text-center p-8 rounded-2xl bg-white shadow-sm border border-gray-100">
             <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -129,7 +165,7 @@ const Index = () => {
             <h3 className="text-xl font-semibold mb-4">Secure Payment</h3>
             <p className="text-gray-600">Your payment information is always safe</p>
           </div>
-        </div>
+        </div> */}
       </main>
     </div>
   );
